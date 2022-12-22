@@ -1,4 +1,4 @@
-name := "ScalaFXML Example"
+name := "Lab2 Scala"
 organization := "scalafx.org"
 version := "1.0.7"
 
