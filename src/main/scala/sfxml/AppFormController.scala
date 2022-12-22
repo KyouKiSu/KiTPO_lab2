@@ -26,7 +26,7 @@ class AppFormController(val userTypeChoiceBox: ChoiceBox[String],
 
 
 
-    System.out.println("HE")
+    //System.out.println("HE")
     val list: ObservableList[String] = FXCollections.observableArrayList
     UserFactory.types.forEach(_class => {
       list.add(_class.getClassName)
@@ -59,16 +59,16 @@ class AppFormController(val userTypeChoiceBox: ChoiceBox[String],
    def createElement: UserType = {
     val values: util.ArrayList[String] = new util.ArrayList[String]
     userTypeFieldGrid.getChildren.forEach(element=>{
-      println(element.getClass)
+      //println(element.getClass)
       if (element.getClass.toString().equalsIgnoreCase("class javafx.scene.control.TextField")) {
-        println("GOGT")
+        //println("GOGT")
         val field: javafx.scene.control.TextField = element.asInstanceOf[javafx.scene.control.TextField]
         values.add(field.getText)
       }
     })
 
     val builder: UserType = vTreeFactory.getTypeInstance
-     println(values)
+     //println(values)
     val instance: UserType = builder.create(values)
     return instance
   }

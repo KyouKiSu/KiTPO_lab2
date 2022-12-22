@@ -2,6 +2,7 @@ package vtree
 
 import types.UserType
 
+import java.lang.Thread.sleep
 import java.util
 import scala.util.control.Breaks.{break, breakable}
 
@@ -17,10 +18,11 @@ class VTree() {
     var current = root
     var parent = root
     var left = true
+
+    var _value = value
     while ( {
       true
     }) {
-      var _value=value
 
       if (current == null) {
         val newNode = new Node(_value)
@@ -121,7 +123,7 @@ class VTree() {
       true
     }) {
       breakable {
-
+        println(states.size())
         if (nodes.empty) return
         val current = nodes.peek
         if (current == null) {
@@ -132,15 +134,15 @@ class VTree() {
           break;
           //todo: continue is not supported
         }
-        if (states.peek eq new Integer(2)) {
+        if (states.peek.intValue() eq Integer.valueOf(2)) {
           func.doWith(current.getValue)
           nodes.pop
           states.pop
           if (nodes.empty) return
         }
         else {
-          if (states.peek eq new Integer(0)) {
-            val l = Integer.valueOf(states.peek.intValue + 1)
+          if (states.peek.intValue() eq Integer.valueOf(0)) {
+            val l = Integer.valueOf(1)
             states.pop
             states.push(l)
             states.push(0)
@@ -149,8 +151,8 @@ class VTree() {
             break;
             //todo: continue is not supported
           }
-          if (states.peek eq new Integer(1)) {
-            val l = Integer.valueOf(states.peek.intValue + 1)
+          if (states.peek.intValue() eq Integer.valueOf(1)) {
+            val l = Integer.valueOf(2)
             states.pop
             states.push(l)
             states.push(0)
@@ -241,6 +243,7 @@ class VTree() {
     while ( {
       true
     }) {
+      //println(nodes.peek().getValue)
       breakable {
         if (nodes.empty) return null
         val current = nodes.peek
@@ -252,18 +255,19 @@ class VTree() {
           //todo: continue is not supported
         }
         val cmpResult = value.compareTo(current.getValue)
+
         if (cmpResult == 0) {
           nodes.pop
           if (nodes.empty) return null
           return nodes
         }
-        if (cmpResult < 0 || (states.peek eq new Integer(2))) {
+        if (cmpResult < 0 || (states.peek.intValue() eq Integer.valueOf(2))) {
           nodes.pop
           states.pop
           if (nodes.empty) return null
         }
         else {
-          if (states.peek eq new Integer(0)) {
+          if (states.peek.intValue() eq Integer.valueOf(0)) {
             val l = Integer.valueOf(states.peek.intValue + 1)
             states.pop
             states.push(l)
@@ -272,7 +276,7 @@ class VTree() {
             break;
             //todo: continue is not supported
           }
-          if (states.peek eq new Integer(1)) {
+          if (states.peek.intValue() eq Integer.valueOf(1)) {
             val l = Integer.valueOf(states.peek.intValue + 1)
             states.pop
             states.push(l)
@@ -294,17 +298,21 @@ class VTree() {
 
   def Remove(value: UserType): UserType = {
     val parents = findParents(value)
+
     if (parents == null || parents.empty) { // root or not found
-      if (root.getValue.compareTo(value) == 0) if (root.getRightChild == null && root.getLeftChild == null) {
-        val toreturn = root.getValue
-        root = null
-        return toreturn
-        // if any child present, continue below}
+      if (root.getValue.compareTo(value) == 0) {
+        if (root.getRightChild == null && root.getLeftChild == null) {
+          val toreturn = root.getValue
+          root = null
+          return toreturn
+          // if any child present, continue below}
+        } else {}
       }
       else { // no element found
         return null
       }
     }
+
       var current: Node = null
       var parent: Node = null
       val childs = new util.Stack[Node]
@@ -319,10 +327,12 @@ class VTree() {
       var shouldReturn = false
       var cvalue = value
       var deleted: Node = null
+    breakable {
       while ( {
         true
       }) {
-        breakable {
+        //println(childs.peek().getValue)
+          var continue=false;
           if (childs.empty) break //todo: break is not supported
           current = childs.peek
           if (shouldReturn) {
@@ -344,23 +354,34 @@ class VTree() {
             childs.peek.decrementCount()
             cvalue = b
             childs.pop
-            break; //todo: continue is not supported
+            continue=true; //todo: continue is not supported
           }
+        if(!continue) {
+          continue=false;
           if (current.getLeftChild == null && current.getRightChild == null) {
             deleted = current
             cvalue = current.getValue
             shouldReturn = true
-            break;
+            continue=true;
             //todo: continue is not supported
           }
-          if (childs.peek.getLeftChild == null || childs.peek.getRightChild != null && childs.peek.getLeftChild.getValue.compareTo(childs.peek.getRightChild.getValue) > 0) { // going right
-            childs.push(childs.peek.getRightChild)
+          if(!continue) {
+            if (childs.peek.getLeftChild == null || childs.peek.getRightChild != null && childs.peek.getLeftChild.getValue.compareTo(childs.peek.getRightChild.getValue) > 0) { // going right
+              childs.push(childs.peek.getRightChild)
+              println("RIGHT")
+            }
+            else { // going left
+              println("LEFT")
+              childs.push(childs.peek.getLeftChild)
+            }
           }
-          else { // going left
-            childs.push(childs.peek.getLeftChild)
-          }
+
+
+        }
+
         }
       }
+    breakable {
       while ( {
         true
       }) {
@@ -368,6 +389,7 @@ class VTree() {
         parents.peek.decrementCount()
         parents.pop
       }
+    }
       value
     }
 
